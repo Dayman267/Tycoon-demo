@@ -46,7 +46,6 @@ public sealed class CarBehaviour : MonoBehaviour
                     return;
                 }
             }
-            //return;
         }
         
         _rb.velocity = transform.forward * _speed;

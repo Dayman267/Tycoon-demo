@@ -13,5 +13,16 @@ public static class ProjectNames
     public static float Details = 0f;
     public static float DetailsPerCar = 1f;
 
-    public static int GaragePrice = 5;
+    public static int GaragePrice = 3;
+
+    public static int UpgradeCost = 5;
+    public static int UpgradeDetailsCost = 1;
+    public static int GarageUpgradeCost = 5;
+    public static int UpgradedCost = 1;
+    public static int GarageUpgradedCost = 1;
+
+    public static int GasLevel = 1;
+    public static int GarageLevel = 1;
+
+    public static bool isGarageBuilt = false;
 }

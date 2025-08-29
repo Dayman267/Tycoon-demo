@@ -1,19 +1,25 @@
-using System.Collections;
-using TMPro;
+using UI;
 using UnityEngine;
 
 public sealed class NewBuildingButton : MonoBehaviour
 {
-    [SerializeField] private int buildingPrice = ProjectNames.GaragePrice;
+    private bool _isGarageBuilt = ProjectNames.isGarageBuilt;
+    private int buildingPrice = ProjectNames.GaragePrice;
     [SerializeField] private GameObject[] buildings;
 
     [SerializeField] private GameObject textCantBuild;
 
     private SavingsManager _savingsManager;
+    private WarningTextController _warningTextController;
 
     private void Awake()
     {
         _savingsManager = GameObject.FindWithTag("SavingsManager").GetComponent<SavingsManager>();
+        _warningTextController = GameObject.FindWithTag("WarningText").GetComponent<WarningTextController>();
+        if (ProjectNames.isGarageBuilt)
+        {
+            RestoreBuilding();
+        }
     }
 
     private void BuildBuilding()
@@ -23,6 +29,9 @@ public sealed class NewBuildingButton : MonoBehaviour
             building.SetActive(true);
         }
         _savingsManager.SpentMoney(buildingPrice);
+        ProjectNames.isGarageBuilt = true;
+        _isGarageBuilt = true;
+        _savingsManager.SyncToProjectNames();
         textCantBuild.SetActive(false);
         Destroy(this);
     }
@@ -31,7 +40,7 @@ public sealed class NewBuildingButton : MonoBehaviour
     {
         if (_savingsManager.GetMoney() < buildingPrice)
         {
-            StartCoroutine(ShowWarningText());
+            _warningTextController.ShowWarningText($"You need ${buildingPrice} to build this!");
         }
         else
         {
@@ -39,16 +48,12 @@ public sealed class NewBuildingButton : MonoBehaviour
         }
     }
 
-    private IEnumerator ShowWarningText()
+    public void RestoreBuilding()
     {
-        if (textCantBuild.activeSelf)
+        foreach (GameObject building in buildings)
         {
-            yield break;
+            building.SetActive(true);
         }
-
-        textCantBuild.GetComponent<TextMeshProUGUI>().text = $"You need ${buildingPrice} to build this!";
-        textCantBuild.SetActive(true);
-        yield return new WaitForSeconds(2);
-        textCantBuild.SetActive(false);
+        Destroy(this);
     }
 }
